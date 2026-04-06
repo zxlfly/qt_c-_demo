@@ -1,9 +1,10 @@
-#include "mainwindow.h"-1
+#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "QButtonGroup"
 #include <QStringListModel>
 #include <QStandardItemModel>
 #include <QItemSelectionModel>
+#include "Customlistdelegate.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -25,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_model_list->setStringList(m_strList);
     ui->listView->setModel(m_model_list);
     ui->listView->setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::SelectedClicked);
-
+    ui->listView->setItemDelegate(new CustomListDelegate(this));
 
     m_model_table =new QStandardItemModel(2,6,this);
     m_model_table_select = new QItemSelectionModel(m_model_table,this);
