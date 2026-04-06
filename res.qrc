@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/svg/caiwu.svg</file>
+        <file>res/svg/class.svg</file>
+        <file>res/svg/rongyu.svg</file>
+        <file>res/svg/set1.svg</file>
+        <file>res/svg/set2.svg</file>
+        <file>res/svg/user.svg</file>
+    </qresource>
+</RCC>
