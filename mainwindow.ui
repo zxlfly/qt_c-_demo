@@ -324,7 +324,7 @@
               </size>
              </property>
              <property name="text">
-              <string>打开文件</string>
+              <string>恢复初始化</string>
              </property>
             </widget>
            </item>

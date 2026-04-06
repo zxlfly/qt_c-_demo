@@ -48,6 +48,10 @@ private slots:
 
     void do_currentChange_table(const QModelIndex &current,const QModelIndex &pre);
 
+    void on_pushButton_4_clicked();
+
+    void on_pushButton_3_clicked();
+
 private:
     Ui::MainWindow *ui;
     QStringList m_strList;
