@@ -60,19 +60,19 @@ QWidget *CustomTableDelegate::createEditor(QWidget *parent,
 
     // 1列：下拉框
     if (col == 1) {
-        // auto *cb = new QComboBox(parent);
-        // cb->addItems({"北京","上海","广州","深圳","成都"});
-        // cb->setView(new QListView()); // 解决显示重叠问题
-        // return cb;
         auto *cb = new QComboBox(parent);
-        // 1. 填充下拉选项
         cb->addItems({"北京","上海","广州","深圳","成都"});
+        cb->setView(new QListView()); // 解决显示重叠问题
+        return cb;
+        // auto *cb = new QComboBox(parent);
+        // // 1. 填充下拉选项
+        // cb->addItems({"北京","上海","广州","深圳","成都"});
 
-        // 2. 解决重叠的核心配置（Qt 6.1.0 兼容）
-        QListView *listView = new QListView(cb);
-        listView->setUniformItemSizes(true); // 统一选项大小，避免布局错乱
-        listView->setResizeMode(QListView::Adjust); // 自适应内容宽度
-        cb->setView(listView);
+        // // 2. 解决重叠的核心配置（Qt 6.1.0 兼容）
+        // QListView *listView = new QListView(cb);
+        // listView->setUniformItemSizes(true); // 统一选项大小，避免布局错乱
+        // listView->setResizeMode(QListView::Adjust); // 自适应内容宽度
+        // cb->setView(listView);
 
         // 3. 优化样式和大小，避免重叠
         // cb->setSizeAdjustPolicy(QComboBox::AdjustToContents); // 宽度适配内容

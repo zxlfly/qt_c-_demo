@@ -6,6 +6,11 @@
 #include <QItemSelectionModel>
 #include "customlistdelegate.h"
 #include "customtabledelegate.h"
+#include <QLineEdit>
+#include <QComboBox>
+#include <QSpinBox>
+#include <QApplication>
+#include <QListView>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -49,8 +54,80 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableView->setSelectionModel(m_model_table_select);
     ui->tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectItems);
-    ui->tableView->setItemDelegate(new CustomTableDelegate(this));
+
+    ui->tableView->setEditTriggers(QAbstractItemView::AllEditTriggers);
+    // ui->tableView->setItemDelegate(new CustomTableDelegate(this));
     ui->tableView->horizontalHeader()->setStretchLastSection(true);
+    // ==============================================
+    // 核心：给每一行、每一列 直接设置永久控件
+    // ==============================================
+    int rowCount = m_model_table->rowCount();
+    for (int row = 0; row < rowCount; row++)
+    {
+        // ========== 第0列：永久 QLineEdit（姓名） ==========
+        QLineEdit *edit = new QLineEdit(this);
+        edit->setText(m_model_table->index(row, 0).data().toString());
+        ui->tableView->setIndexWidget(m_model_table->index(row, 0), edit);
+        connect(edit, &QLineEdit::textChanged, this, [=](const QString &text){
+            m_model_table->setData(m_model_table->index(row, 0), text);
+        });
+
+        // ========== 第1列：永久 QComboBox（城市） ==========
+        QComboBox *cb = new QComboBox(this);
+        cb->addItems({"北京","上海","广州","深圳","成都"});
+        cb->setCurrentText(m_model_table->index(row, 1).data().toString());
+        ui->tableView->setIndexWidget(m_model_table->index(row, 1), cb);
+        connect(cb, &QComboBox::currentTextChanged, this, [=](const QString &text){
+            m_model_table->setData(m_model_table->index(row, 1), text);
+        });
+
+        // ========== 第2列：永久 QSpinBox（年龄） ==========
+        QSpinBox *spin = new QSpinBox(this);
+        spin->setRange(0, 100);
+        spin->setValue(m_model_table->index(row, 2).data().toInt());
+        ui->tableView->setIndexWidget(m_model_table->index(row, 2), spin);
+        connect(spin, QOverload<int>::of(&QSpinBox::valueChanged), this, [=](int val){
+            m_model_table->setData(m_model_table->index(row, 2), val);
+        });
+
+        // ========== 第3列：永久 QCheckBox（状态） ==========
+        // QCheckBox *ck = new QCheckBox(this);
+        // ck->setChecked(m_model_table->index(row, 3).data().toBool());
+        // m_model_table->setData(m_model_table->index(row, 3), "", Qt::DisplayRole);
+        // ui->tableView->setIndexWidget(m_model_table->index(row, 3), ck);
+        // connect(ck, &QCheckBox::clicked, this, [=](bool checked){
+        //     m_model_table->setData(m_model_table->index(row, 3), checked);
+        // });
+        // ========== 第3列：永久 QCheckBox（状态） ==========
+        // ========== 第3列：永久 QCheckBox（状态） ==========
+        QCheckBox *ck = new QCheckBox(this);
+
+        // 只从 EditRole 读状态
+        bool checked = m_model_table->index(row, 3).data(Qt::EditRole).toBool();
+        ck->setChecked(checked);
+
+        // 关键：表格只保留状态，不显示任何文字
+        auto idx = m_model_table->index(row, 3);
+        m_model_table->setData(idx, "", Qt::DisplayRole);    // 清空显示
+        m_model_table->setData(idx, checked, Qt::EditRole);  // 保存状态
+
+        ui->tableView->setIndexWidget(idx, ck);
+
+        connect(ck, &QCheckBox::clicked, this, [=](bool checked){
+            m_model_table->setData(idx, checked, Qt::EditRole);
+        });
+
+
+
+        // ========== 第4列：永久 QLineEdit（备注） ==========
+        QLineEdit *edit2 = new QLineEdit(this);
+        edit2->setText(m_model_table->index(row, 4).data().toString());
+        ui->tableView->setIndexWidget(m_model_table->index(row, 4), edit2);
+        connect(edit2, &QLineEdit::textChanged, this, [=](const QString &text){
+            m_model_table->setData(m_model_table->index(row, 4), text);
+        });
+    }
+
 
 }
 
