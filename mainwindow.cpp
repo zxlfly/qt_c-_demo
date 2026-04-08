@@ -44,7 +44,12 @@ MainWindow::MainWindow(QWidget *parent)
         m_model_table->setItem(row, 0, new QStandardItem("用户_" + QString::number(row)));
         m_model_table->setItem(row, 1, new QStandardItem("北京"));
         m_model_table->setItem(row, 2, new QStandardItem("25"));
-        m_model_table->setItem(row, 3, new QStandardItem(Qt::Checked)); // 勾选状态
+        // m_model_table->setItem(row, 3, new QStandardItem(Qt::Checked)); // 勾选状态
+        QStandardItem *item = new QStandardItem();
+        item->setData(false, Qt::EditRole);  // 存状态
+        item->setText("");                  // 不显示任何文字
+        m_model_table->setItem(row, 3, item);
+
         m_model_table->setItem(row, 4, new QStandardItem("测试备注"));
         m_model_table->setItem(row, 5, new QStandardItem("图片"));
     }
@@ -99,25 +104,18 @@ MainWindow::MainWindow(QWidget *parent)
         //     m_model_table->setData(m_model_table->index(row, 3), checked);
         // });
         // ========== 第3列：永久 QCheckBox（状态） ==========
-        // ========== 第3列：永久 QCheckBox（状态） ==========
         QCheckBox *ck = new QCheckBox(this);
+        ck->setText(""); // 关键！复选框本身不要文字！
 
-        // 只从 EditRole 读状态
-        bool checked = m_model_table->index(row, 3).data(Qt::EditRole).toBool();
-        ck->setChecked(checked);
-
-        // 关键：表格只保留状态，不显示任何文字
         auto idx = m_model_table->index(row, 3);
-        m_model_table->setData(idx, "", Qt::DisplayRole);    // 清空显示
-        m_model_table->setData(idx, checked, Qt::EditRole);  // 保存状态
+        bool checked = idx.data(Qt::EditRole).toBool();
+        ck->setChecked(checked);
 
         ui->tableView->setIndexWidget(idx, ck);
 
         connect(ck, &QCheckBox::clicked, this, [=](bool checked){
             m_model_table->setData(idx, checked, Qt::EditRole);
         });
-
-
 
         // ========== 第4列：永久 QLineEdit（备注） ==========
         QLineEdit *edit2 = new QLineEdit(this);
@@ -128,7 +126,40 @@ MainWindow::MainWindow(QWidget *parent)
         });
     }
 
+    // 基础使用，不自定义
+    model_jichu = new QStandardItemModel(4,4,this);
+    model_jichu->setHorizontalHeaderLabels({"姓名", "年龄","性别" ,"城市"});
 
+    for (int row = 0; row < 4; ++row) {
+        model_jichu->setItem(row,0,new QStandardItem("张三"));
+        model_jichu->setItem(row,1,new QStandardItem("18"));
+        model_jichu->setItem(row,2,new QStandardItem("男"));
+        model_jichu->setItem(row,3,new QStandardItem("武汉"));
+    }
+    model_jichu_select = new QItemSelectionModel(model_jichu,this);
+    ui->jichu->setModel(model_jichu);
+    ui->jichu->setSelectionModel(model_jichu_select);
+    ui->jichu->horizontalHeader()->setStretchLastSection(true);
+    // ========== 选中行为配置 ==========
+    // 1. 整行选中
+    ui->jichu->setSelectionBehavior(QAbstractItemView::SelectRows);
+
+    // 2. 整列选中（二选一，不要同时开）
+    // ui->jichu->setSelectionBehavior(QAbstractItemView::SelectColumns);
+
+    // 选择模式
+    ui->jichu->setSelectionMode(QAbstractItemView::SingleSelection);   // 单选
+    // ui->jichu->setSelectionMode(QAbstractItemView::MultiSelection);  // 点击多选
+    // ui->jichu->setSelectionMode(QAbstractItemView::ExtendedSelection); // Ctrl/Shift 多选
+
+    // 可选：让选中行高亮更明显
+    ui->jichu->setAlternatingRowColors(true);
+    // 禁止编辑
+    ui->jichu->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    // 表头点击也能整行/列选中
+    ui->jichu->horizontalHeader()->setSectionsClickable(true);
+    ui->jichu->verticalHeader()->setSectionsClickable(true);
 }
 
 MainWindow::~MainWindow()

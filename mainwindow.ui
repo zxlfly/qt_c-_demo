@@ -33,10 +33,10 @@
           </size>
          </property>
          <property name="text">
-          <string>学员信息</string>
+          <string>listview</string>
          </property>
          <property name="icon">
-          <iconset resource="build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/.qt/rcc/resources.qrc">
+          <iconset resource="build/Qt_6_11_0_for_macOS-Debug/.qt/rcc/resources.qrc">
            <normaloff>:/res/svg/user.svg</normaloff>:/res/svg/user.svg</iconset>
          </property>
          <property name="iconSize">
@@ -59,10 +59,10 @@
           </size>
          </property>
          <property name="text">
-          <string>课程安排</string>
+          <string>p Delegate</string>
          </property>
          <property name="icon">
-          <iconset resource="build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/.qt/rcc/resources.qrc">
+          <iconset resource="build/Qt_6_11_0_for_macOS-Debug/.qt/rcc/resources.qrc">
            <normaloff>:/res/svg/class.svg</normaloff>:/res/svg/class.svg</iconset>
          </property>
          <property name="iconSize">
@@ -85,10 +85,10 @@
           </size>
          </property>
          <property name="text">
-          <string>财务</string>
+          <string>基础Delegate</string>
          </property>
          <property name="icon">
-          <iconset resource="build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/.qt/rcc/resources.qrc">
+          <iconset resource="build/Qt_6_11_0_for_macOS-Debug/.qt/rcc/resources.qrc">
            <normaloff>:/res/svg/caiwu.svg</normaloff>:/res/svg/caiwu.svg</iconset>
          </property>
          <property name="iconSize">
@@ -111,10 +111,10 @@
           </size>
          </property>
          <property name="text">
-          <string>荣誉墙</string>
+          <string>cus Delegate</string>
          </property>
          <property name="icon">
-          <iconset resource="build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/.qt/rcc/resources.qrc">
+          <iconset resource="build/Qt_6_11_0_for_macOS-Debug/.qt/rcc/resources.qrc">
            <normaloff>:/res/svg/rongyu.svg</normaloff>:/res/svg/rongyu.svg</iconset>
          </property>
          <property name="iconSize">
@@ -137,10 +137,10 @@
           </size>
          </property>
          <property name="text">
-          <string>系统设置</string>
+          <string>非Delegate</string>
          </property>
          <property name="icon">
-          <iconset resource="build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/.qt/rcc/resources.qrc">
+          <iconset resource="build/Qt_6_11_0_for_macOS-Debug/.qt/rcc/resources.qrc">
            <normaloff>:/res/svg/set2.svg</normaloff>:/res/svg/set2.svg</iconset>
          </property>
          <property name="iconSize">
@@ -173,7 +173,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>4</number>
       </property>
       <widget class="QWidget" name="userInfo">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -297,7 +297,7 @@
        </layout>
       </widget>
       <widget class="QWidget" name="course">
-       <widget class="QWidget" name="">
+       <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
           <x>0</x>
@@ -368,49 +368,54 @@
        </widget>
       </widget>
       <widget class="QWidget" name="finance">
-       <widget class="QLabel" name="label_2">
-        <property name="geometry">
-         <rect>
-          <x>260</x>
-          <y>260</y>
-          <width>53</width>
-          <height>15</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>财务</string>
-        </property>
-       </widget>
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <item>
+         <layout class="QVBoxLayout" name="jichu111">
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>基础Delegate</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTableView" name="jichu"/>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="honorWall">
-       <widget class="QLabel" name="label_3">
-        <property name="geometry">
-         <rect>
-          <x>250</x>
-          <y>240</y>
-          <width>53</width>
-          <height>15</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>荣誉</string>
-        </property>
-       </widget>
+       <layout class="QVBoxLayout" name="verticalLayout_8">
+        <item>
+         <layout class="QVBoxLayout" name="quanziding222">
+          <item>
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>全自定义Delegate</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTableView" name="quanziding"/>
+          </item>
+         </layout>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="setting">
-       <widget class="QLabel" name="label_4">
-        <property name="geometry">
-         <rect>
-          <x>270</x>
-          <y>240</y>
-          <width>53</width>
-          <height>15</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>设置</string>
-        </property>
-       </widget>
+       <layout class="QVBoxLayout" name="verticalLayout_9">
+        <item>
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>非Delegate</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableView" name="buyong"/>
+        </item>
+       </layout>
       </widget>
      </widget>
     </item>
@@ -418,7 +423,7 @@
   </widget>
  </widget>
  <resources>
-  <include location="build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/.qt/rcc/resources.qrc"/>
+  <include location="build/Qt_6_11_0_for_macOS-Debug/.qt/rcc/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

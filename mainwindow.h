@@ -59,5 +59,8 @@ private:
 
     QStandardItemModel *m_model_table;
     QItemSelectionModel *m_model_table_select;
+    // 基础
+    QStandardItemModel *model_jichu;
+    QItemSelectionModel *model_jichu_select;
 };
 #endif // MAINWINDOW_H
