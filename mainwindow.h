@@ -6,7 +6,8 @@
 class QStringListModel;
 class QStandardItemModel;
 class QItemSelectionModel;
-
+class MvcDetailComboBoxDelegate;
+class MvcDetailQSpinBoxDelegate;
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class MainWindow;
@@ -20,8 +21,12 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow() override;
-
+private:
+    MvcDetailComboBoxDelegate* mvcDetailComboBoxDelegate;
+    MvcDetailQSpinBoxDelegate* mvcDetailQSpinBoxDelegate;
 private slots:
+
+
     void on_pushButton_clicked();
 
     void on_pushButton_2_clicked();
@@ -57,10 +62,11 @@ private:
     QStringList m_strList;
     QStringListModel *m_model_list;
 
-    QStandardItemModel *m_model_table;
-    QItemSelectionModel *m_model_table_select;
     // 基础
     QStandardItemModel *model_jichu;
     QItemSelectionModel *model_jichu_select;
+    // mvc完整基础示例
+    QStandardItemModel *model_mvc;
+    QItemSelectionModel *model_mvc_select;
 };
 #endif // MAINWINDOW_H

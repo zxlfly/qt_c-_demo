@@ -28,7 +28,7 @@
         <widget class="QToolButton" name="btn1">
          <property name="minimumSize">
           <size>
-           <width>80</width>
+           <width>100</width>
            <height>60</height>
           </size>
          </property>
@@ -36,7 +36,7 @@
           <string>listview</string>
          </property>
          <property name="icon">
-          <iconset resource="build/Qt_6_11_0_for_macOS-Debug/.qt/rcc/resources.qrc">
+          <iconset resource="build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/.qt/rcc/resources.qrc">
            <normaloff>:/res/svg/user.svg</normaloff>:/res/svg/user.svg</iconset>
          </property>
          <property name="iconSize">
@@ -54,15 +54,15 @@
         <widget class="QToolButton" name="btn2">
          <property name="minimumSize">
           <size>
-           <width>80</width>
+           <width>100</width>
            <height>60</height>
           </size>
          </property>
          <property name="text">
-          <string>p Delegate</string>
+          <string>mvc</string>
          </property>
          <property name="icon">
-          <iconset resource="build/Qt_6_11_0_for_macOS-Debug/.qt/rcc/resources.qrc">
+          <iconset resource="build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/.qt/rcc/resources.qrc">
            <normaloff>:/res/svg/class.svg</normaloff>:/res/svg/class.svg</iconset>
          </property>
          <property name="iconSize">
@@ -80,7 +80,7 @@
         <widget class="QToolButton" name="btn3">
          <property name="minimumSize">
           <size>
-           <width>80</width>
+           <width>100</width>
            <height>60</height>
           </size>
          </property>
@@ -88,7 +88,7 @@
           <string>基础Delegate</string>
          </property>
          <property name="icon">
-          <iconset resource="build/Qt_6_11_0_for_macOS-Debug/.qt/rcc/resources.qrc">
+          <iconset resource="build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/.qt/rcc/resources.qrc">
            <normaloff>:/res/svg/caiwu.svg</normaloff>:/res/svg/caiwu.svg</iconset>
          </property>
          <property name="iconSize">
@@ -106,7 +106,7 @@
         <widget class="QToolButton" name="btn4">
          <property name="minimumSize">
           <size>
-           <width>80</width>
+           <width>100</width>
            <height>60</height>
           </size>
          </property>
@@ -114,7 +114,7 @@
           <string>cus Delegate</string>
          </property>
          <property name="icon">
-          <iconset resource="build/Qt_6_11_0_for_macOS-Debug/.qt/rcc/resources.qrc">
+          <iconset resource="build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/.qt/rcc/resources.qrc">
            <normaloff>:/res/svg/rongyu.svg</normaloff>:/res/svg/rongyu.svg</iconset>
          </property>
          <property name="iconSize">
@@ -132,7 +132,7 @@
         <widget class="QToolButton" name="btn5">
          <property name="minimumSize">
           <size>
-           <width>80</width>
+           <width>100</width>
            <height>60</height>
           </size>
          </property>
@@ -140,7 +140,7 @@
           <string>非Delegate</string>
          </property>
          <property name="icon">
-          <iconset resource="build/Qt_6_11_0_for_macOS-Debug/.qt/rcc/resources.qrc">
+          <iconset resource="build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/.qt/rcc/resources.qrc">
            <normaloff>:/res/svg/set2.svg</normaloff>:/res/svg/set2.svg</iconset>
          </property>
          <property name="iconSize">
@@ -173,7 +173,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>4</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="userInfo">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -423,7 +423,7 @@
   </widget>
  </widget>
  <resources>
-  <include location="build/Qt_6_11_0_for_macOS-Debug/.qt/rcc/resources.qrc"/>
+  <include location="build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/.qt/rcc/resources.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -5,7 +5,8 @@
 #include <QStandardItemModel>
 #include <QItemSelectionModel>
 #include "customlistdelegate.h"
-#include "customtabledelegate.h"
+#include "mvcdetailcomboboxdelegate.h"
+#include "mvcdetailqspinboxdelegate.h"
 #include <QLineEdit>
 #include <QComboBox>
 #include <QSpinBox>
@@ -26,105 +27,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(btns,&QButtonGroup::idClicked,ui->stackedWidget,&QStackedWidget::setCurrentIndex);
     btns->button(0)->setChecked(true);
     ui->stackedWidget->setCurrentIndex(0);
-
+    // list示例
     m_strList<<"北京"<<"上海"<<"成都"<<"武汉"<<"南京";
     m_model_list = new QStringListModel(this);
     m_model_list->setStringList(m_strList);
     ui->listView->setModel(m_model_list);
     ui->listView->setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::SelectedClicked);
     ui->listView->setItemDelegate(new CustomListDelegate(this));
-
-    m_model_table = new QStandardItemModel(4, 6, this);
-    m_model_table->setHorizontalHeaderLabels({
-        "姓名", "城市", "年龄", "状态", "备注", "图标"
-    });
-
-    // 初始化测试数据
-    for(int row=0; row<4; row++){
-        m_model_table->setItem(row, 0, new QStandardItem("用户_" + QString::number(row)));
-        m_model_table->setItem(row, 1, new QStandardItem("北京"));
-        m_model_table->setItem(row, 2, new QStandardItem("25"));
-        // m_model_table->setItem(row, 3, new QStandardItem(Qt::Checked)); // 勾选状态
-        QStandardItem *item = new QStandardItem();
-        item->setData(false, Qt::EditRole);  // 存状态
-        item->setText("");                  // 不显示任何文字
-        m_model_table->setItem(row, 3, item);
-
-        m_model_table->setItem(row, 4, new QStandardItem("测试备注"));
-        m_model_table->setItem(row, 5, new QStandardItem("图片"));
-    }
-
-    m_model_table_select = new QItemSelectionModel(m_model_table,this);
-    ui->tableView->setModel(m_model_table);
-    ui->tableView->setSelectionModel(m_model_table_select);
-    ui->tableView->setSelectionMode(QAbstractItemView::ExtendedSelection);
-    ui->tableView->setSelectionBehavior(QAbstractItemView::SelectItems);
-
-    ui->tableView->setEditTriggers(QAbstractItemView::AllEditTriggers);
-    // ui->tableView->setItemDelegate(new CustomTableDelegate(this));
-    ui->tableView->horizontalHeader()->setStretchLastSection(true);
-    // ==============================================
-    // 核心：给每一行、每一列 直接设置永久控件
-    // ==============================================
-    int rowCount = m_model_table->rowCount();
-    for (int row = 0; row < rowCount; row++)
-    {
-        // ========== 第0列：永久 QLineEdit（姓名） ==========
-        QLineEdit *edit = new QLineEdit(this);
-        edit->setText(m_model_table->index(row, 0).data().toString());
-        ui->tableView->setIndexWidget(m_model_table->index(row, 0), edit);
-        connect(edit, &QLineEdit::textChanged, this, [=](const QString &text){
-            m_model_table->setData(m_model_table->index(row, 0), text);
-        });
-
-        // ========== 第1列：永久 QComboBox（城市） ==========
-        QComboBox *cb = new QComboBox(this);
-        cb->addItems({"北京","上海","广州","深圳","成都"});
-        cb->setCurrentText(m_model_table->index(row, 1).data().toString());
-        ui->tableView->setIndexWidget(m_model_table->index(row, 1), cb);
-        connect(cb, &QComboBox::currentTextChanged, this, [=](const QString &text){
-            m_model_table->setData(m_model_table->index(row, 1), text);
-        });
-
-        // ========== 第2列：永久 QSpinBox（年龄） ==========
-        QSpinBox *spin = new QSpinBox(this);
-        spin->setRange(0, 100);
-        spin->setValue(m_model_table->index(row, 2).data().toInt());
-        ui->tableView->setIndexWidget(m_model_table->index(row, 2), spin);
-        connect(spin, QOverload<int>::of(&QSpinBox::valueChanged), this, [=](int val){
-            m_model_table->setData(m_model_table->index(row, 2), val);
-        });
-
-        // ========== 第3列：永久 QCheckBox（状态） ==========
-        // QCheckBox *ck = new QCheckBox(this);
-        // ck->setChecked(m_model_table->index(row, 3).data().toBool());
-        // m_model_table->setData(m_model_table->index(row, 3), "", Qt::DisplayRole);
-        // ui->tableView->setIndexWidget(m_model_table->index(row, 3), ck);
-        // connect(ck, &QCheckBox::clicked, this, [=](bool checked){
-        //     m_model_table->setData(m_model_table->index(row, 3), checked);
-        // });
-        // ========== 第3列：永久 QCheckBox（状态） ==========
-        QCheckBox *ck = new QCheckBox(this);
-        ck->setText(""); // 关键！复选框本身不要文字！
-
-        auto idx = m_model_table->index(row, 3);
-        bool checked = idx.data(Qt::EditRole).toBool();
-        ck->setChecked(checked);
-
-        ui->tableView->setIndexWidget(idx, ck);
-
-        connect(ck, &QCheckBox::clicked, this, [=](bool checked){
-            m_model_table->setData(idx, checked, Qt::EditRole);
-        });
-
-        // ========== 第4列：永久 QLineEdit（备注） ==========
-        QLineEdit *edit2 = new QLineEdit(this);
-        edit2->setText(m_model_table->index(row, 4).data().toString());
-        ui->tableView->setIndexWidget(m_model_table->index(row, 4), edit2);
-        connect(edit2, &QLineEdit::textChanged, this, [=](const QString &text){
-            m_model_table->setData(m_model_table->index(row, 4), text);
-        });
-    }
 
     // 基础使用，不自定义
     model_jichu = new QStandardItemModel(4,4,this);
@@ -143,23 +52,51 @@ MainWindow::MainWindow(QWidget *parent)
     // ========== 选中行为配置 ==========
     // 1. 整行选中
     ui->jichu->setSelectionBehavior(QAbstractItemView::SelectRows);
-
     // 2. 整列选中（二选一，不要同时开）
     // ui->jichu->setSelectionBehavior(QAbstractItemView::SelectColumns);
-
     // 选择模式
     ui->jichu->setSelectionMode(QAbstractItemView::SingleSelection);   // 单选
     // ui->jichu->setSelectionMode(QAbstractItemView::MultiSelection);  // 点击多选
     // ui->jichu->setSelectionMode(QAbstractItemView::ExtendedSelection); // Ctrl/Shift 多选
-
     // 可选：让选中行高亮更明显
     ui->jichu->setAlternatingRowColors(true);
     // 禁止编辑
-    ui->jichu->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    // ui->jichu->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     // 表头点击也能整行/列选中
     ui->jichu->horizontalHeader()->setSectionsClickable(true);
     ui->jichu->verticalHeader()->setSectionsClickable(true);
+
+    //mvc完整基础示例
+    model_mvc = new QStandardItemModel(4,5,this);  // 修正：改为5列
+    model_mvc->setHorizontalHeaderLabels({"列0", "列1", "列2", "列3", "列4"});  // 添加表头
+    model_mvc_select = new QItemSelectionModel(model_mvc,this);
+    for (int row = 0; row < 4; ++row) {
+        model_mvc->setItem(row,0,new QStandardItem(QString::number(row)));  // 列0: 行号
+        model_mvc->setItem(row,1,new QStandardItem(QString::number(10 + row)));  // 列1: SpinBox (整数)
+        model_mvc->setItem(row,2,new QStandardItem(QString::number(20 + row)));  // 列2: SpinBox (整数)
+        model_mvc->setItem(row,3,new QStandardItem(QString::number(30 + row)));  // 列3: SpinBox (整数)
+        model_mvc->setItem(row,4,new QStandardItem("A"));  // 列4: ComboBox (字符串)
+    };
+    mvcDetailQSpinBoxDelegate = new MvcDetailQSpinBoxDelegate(this);
+    ui->tableView->setItemDelegateForColumn(1,mvcDetailQSpinBoxDelegate);
+    ui->tableView->setItemDelegateForColumn(2,mvcDetailQSpinBoxDelegate);
+    ui->tableView->setItemDelegateForColumn(3,mvcDetailQSpinBoxDelegate);
+
+    mvcDetailComboBoxDelegate = new MvcDetailComboBoxDelegate(this);
+    QStringList strList;
+    strList<<"A"<<"B"<<"C"<<"D";
+    mvcDetailComboBoxDelegate->setMvcDetailComboBoxDelegateList(strList,false);
+    ui->tableView->setItemDelegateForColumn(4,mvcDetailComboBoxDelegate);  // 修正：使用正确的委托
+    ui->tableView->setModel(model_mvc);
+    ui->tableView->setSelectionModel(model_mvc_select);
+    
+    // 可选：配置 tableView 的显示和行为
+    // ui->tableView->horizontalHeader()->setStretchLastSection(true);
+    // ui->tableView->setAlternatingRowColors(true);
+    // ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    // ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
+    
 }
 
 MainWindow::~MainWindow()
@@ -272,15 +209,15 @@ void MainWindow::on_pushButton_4_clicked()
     ui->plainTextEdit_2->clear();
 
     // 获取行数、列数
-    int rowCount = m_model_table->rowCount();
-    int colCount = m_model_table->columnCount();
+    int rowCount = model_mvc->rowCount();
+    int colCount = model_mvc->columnCount();
 
     QString text;
 
     // 拼接表头
     QStringList headers;
     for (int c = 0; c < colCount; ++c) {
-        headers << m_model_table->horizontalHeaderItem(c)->text();
+        headers << model_mvc->horizontalHeaderItem(c)->text();
     }
     text += headers.join("\t") + "\n";
     text += "------------------------------------------------\n";
@@ -289,7 +226,7 @@ void MainWindow::on_pushButton_4_clicked()
     for (int r = 0; r < rowCount; ++r) {
         QStringList rowData;
         for (int c = 0; c < colCount; ++c) {
-            QModelIndex index = m_model_table->index(r, c);
+            QModelIndex index = model_mvc->index(r, c);
             rowData << index.data().toString();
         }
         text += rowData.join("\t") + "\n";
@@ -303,25 +240,22 @@ void MainWindow::on_pushButton_4_clicked()
 void MainWindow::on_pushButton_3_clicked()
 {
     // 1. 清空现有所有数据
-    m_model_table->clear();
+    model_mvc->clear();
 
     // 2. 重新设置行列数
-    m_model_table->setRowCount(4);
-    m_model_table->setColumnCount(6);
+    model_mvc->setRowCount(4);
+    model_mvc->setColumnCount(5);
 
     // 3. 恢复表头
-    m_model_table->setHorizontalHeaderLabels({
-        "姓名", "城市", "年龄", "状态", "备注", "图标"
-    });
+    model_mvc->setHorizontalHeaderLabels({"列0", "列1", "列2", "列3", "列4"});
 
     // 4. 恢复初始测试数据
     for(int row = 0; row < 4; row++){
-        m_model_table->setItem(row, 0, new QStandardItem("用户_" + QString::number(row)));
-        m_model_table->setItem(row, 1, new QStandardItem("北京"));
-        m_model_table->setItem(row, 2, new QStandardItem("25"));
-        m_model_table->setItem(row, 3, new QStandardItem(Qt::Checked));  // 复选框正常勾选
-        m_model_table->setItem(row, 4, new QStandardItem("测试备注"));
-        m_model_table->setItem(row, 5, new QStandardItem("图片"));
+        model_mvc->setItem(row, 0, new QStandardItem("0"));
+        model_mvc->setItem(row, 1, new QStandardItem("1"));
+        model_mvc->setItem(row, 2, new QStandardItem("2"));
+        model_mvc->setItem(row, 3, new QStandardItem("3"));
+        model_mvc->setItem(row, 4, new QStandardItem("A"));
     }
 
 }
