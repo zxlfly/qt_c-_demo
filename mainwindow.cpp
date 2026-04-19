@@ -12,7 +12,7 @@
 #include <QSpinBox>
 #include <QApplication>
 #include <QListView>
-
+#include "customtabledelegate.h"
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -24,6 +24,7 @@ MainWindow::MainWindow(QWidget *parent)
     btns->addButton(ui->btn3,2);
     btns->addButton(ui->btn4,3);
     btns->addButton(ui->btn5,4);
+    btns->addButton(ui->btn6,5);
     connect(btns,&QButtonGroup::idClicked,ui->stackedWidget,&QStackedWidget::setCurrentIndex);
     btns->button(0)->setChecked(true);
     ui->stackedWidget->setCurrentIndex(0);
@@ -40,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent)
     model_jichu->setHorizontalHeaderLabels({"姓名", "年龄","性别" ,"城市"});
 
     for (int row = 0; row < 4; ++row) {
-        model_jichu->setItem(row,0,new QStandardItem("张三"));
+        model_jichu->setItem(row,0,new QStandardItem("基础使用"));
         model_jichu->setItem(row,1,new QStandardItem("18"));
         model_jichu->setItem(row,2,new QStandardItem("男"));
         model_jichu->setItem(row,3,new QStandardItem("武汉"));
@@ -69,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // ************ mvc完整基础示例 ************
     model_mvc = new QStandardItemModel(4,5,this);  // 修正：改为5列
-    model_mvc->setHorizontalHeaderLabels({"列0", "列1", "列2", "列3", "列4"});  // 添加表头
+    model_mvc->setHorizontalHeaderLabels({"完整基础示例", "列1", "列2", "列3", "列4"});  // 添加表头
     model_mvc_select = new QItemSelectionModel(model_mvc,this);
     for (int row = 0; row < 4; ++row) {
         model_mvc->setItem(row,0,new QStandardItem(QString::number(row)));  // 列0: 行号
@@ -99,7 +100,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // ************ 不用委托，默认绘制渲染和编辑使用同一个控件 ************
     model_buyong = new QStandardItemModel(4, 4, this);
-    model_buyong->setHorizontalHeaderLabels({"姓名", "年龄", "性别", "备注"});
+    model_buyong->setHorizontalHeaderLabels({"姓名", "年龄", "性别", "备注（不用委托，默认绘制渲染和编辑使用同一个控件）"});
     model_buyong_select = new QItemSelectionModel(model_buyong, this);
 
     ui->buyong->setModel(model_buyong);
@@ -174,7 +175,26 @@ MainWindow::MainWindow(QWidget *parent)
             });
 
     //  ************ 默认绘制自定义委托，通过paint来绘制非编辑状态下控件样式，使用createEditor绘制编辑控件 ************
+    model_paint = new QStandardItemModel(4, 4, this);
+    model_paint->setHorizontalHeaderLabels({"姓名", "年龄", "性别", "备注（paint绘制）"});
+    model_paint_select = new QItemSelectionModel(model_paint, this);
 
+    ui->paint->setModel(model_paint);
+    ui->paint->setSelectionModel(model_paint_select);
+
+    // 设置自定义委托
+    CustomTableDelegate *paintDelegate = new CustomTableDelegate(this);
+    ui->paint->setItemDelegate(paintDelegate);
+
+    // 填充初始数据
+    for (int row = 0; row < 4; ++row) {
+        model_paint->setItem(row, 0, new QStandardItem("张三"));
+        model_paint->setItem(row, 1, new QStandardItem(QString::number(18 + row)));
+        model_paint->setItem(row, 2, new QStandardItem("男"));
+        model_paint->setItem(row, 3, new QStandardItem("备注" + QString::number(row)));
+    }
+    // 全自定义委托，通过paint来绘制非编辑状态下控件样式，使用editorEvent来实现对应的功能
+    ui->quanziding->setStyleSheet("background-color:red;");
 }
 
 MainWindow::~MainWindow()

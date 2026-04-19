@@ -59,7 +59,7 @@
           </size>
          </property>
          <property name="text">
-          <string>mvc</string>
+          <string>基础不带Delegate</string>
          </property>
          <property name="icon">
           <iconset resource="build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/.qt/rcc/resources.qrc">
@@ -85,7 +85,7 @@
           </size>
          </property>
          <property name="text">
-          <string>基础Delegate</string>
+          <string>基础带Delegate</string>
          </property>
          <property name="icon">
           <iconset resource="build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/.qt/rcc/resources.qrc">
@@ -137,7 +137,7 @@
           </size>
          </property>
          <property name="text">
-          <string>非Delegate</string>
+          <string>不用Delegate</string>
          </property>
          <property name="icon">
           <iconset resource="build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/.qt/rcc/resources.qrc">
@@ -155,7 +155,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="btn5_2">
+        <widget class="QToolButton" name="btn6">
          <property name="minimumSize">
           <size>
            <width>116</width>
@@ -163,7 +163,7 @@
           </size>
          </property>
          <property name="text">
-          <string>paint editorEvent</string>
+          <string>全自定义</string>
          </property>
          <property name="icon">
           <iconset resource="build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/.qt/rcc/resources.qrc">
@@ -199,9 +199,9 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>5</number>
       </property>
-      <widget class="QWidget" name="userInfo">
+      <widget class="QWidget" name="listView_2">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <widget class="QGroupBox" name="groupBox">
@@ -322,7 +322,25 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="course">
+      <widget class="QWidget" name="budaiDelegate">
+       <layout class="QVBoxLayout" name="verticalLayout_6">
+        <item>
+         <layout class="QVBoxLayout" name="jichu111">
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>基础不带Delegate</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTableView" name="jichu"/>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="daiDelegate">
        <widget class="QWidget" name="layoutWidget">
         <property name="geometry">
          <rect>
@@ -350,7 +368,7 @@
               </size>
              </property>
              <property name="text">
-              <string>恢复初始化</string>
+              <string>恢复初始化(基础带Delegate)</string>
              </property>
             </widget>
            </item>
@@ -393,12 +411,12 @@
         </layout>
        </widget>
       </widget>
-      <widget class="QWidget" name="page">
+      <widget class="QWidget" name="danpaint">
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
          <widget class="QGroupBox" name="groupBox_3">
           <property name="title">
-           <string>GroupBox</string>
+           <string>paint Delegate</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_7">
            <item>
@@ -409,25 +427,21 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="finance">
-       <layout class="QVBoxLayout" name="verticalLayout_6">
+      <widget class="QWidget" name="buyongZidaihuizhibianji">
+       <layout class="QVBoxLayout" name="verticalLayout_9">
         <item>
-         <layout class="QVBoxLayout" name="jichu111">
-          <item>
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>基础Delegate</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QTableView" name="jichu"/>
-          </item>
-         </layout>
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>非Delegate</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTableView" name="buyong"/>
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="honorWall">
+      <widget class="QWidget" name="quanziding_2">
        <layout class="QVBoxLayout" name="verticalLayout_8">
         <item>
          <layout class="QVBoxLayout" name="quanziding222">
@@ -442,20 +456,6 @@
            <widget class="QTableView" name="quanziding"/>
           </item>
          </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="setting">
-       <layout class="QVBoxLayout" name="verticalLayout_9">
-        <item>
-         <widget class="QLabel" name="label_4">
-          <property name="text">
-           <string>非Delegate</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QTableView" name="buyong"/>
         </item>
        </layout>
       </widget>

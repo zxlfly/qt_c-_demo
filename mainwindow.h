@@ -71,5 +71,8 @@ private:
     // 不用委托，默认绘制渲染和编辑使用同一个控件
     QStandardItemModel *model_buyong;
     QItemSelectionModel *model_buyong_select;
+    //通过paint来绘制非编辑状态下控件样式，使用createEditor绘制编辑控件
+    QStandardItemModel *model_paint;
+    QItemSelectionModel *model_paint_select;
 };
 #endif // MAINWINDOW_H
