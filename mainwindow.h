@@ -68,5 +68,8 @@ private:
     // mvc完整基础示例
     QStandardItemModel *model_mvc;
     QItemSelectionModel *model_mvc_select;
+    // 不用委托，默认绘制渲染和编辑使用同一个控件
+    QStandardItemModel *model_buyong;
+    QItemSelectionModel *model_buyong_select;
 };
 #endif // MAINWINDOW_H

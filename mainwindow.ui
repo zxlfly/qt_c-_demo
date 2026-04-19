@@ -28,7 +28,7 @@
         <widget class="QToolButton" name="btn1">
          <property name="minimumSize">
           <size>
-           <width>100</width>
+           <width>116</width>
            <height>60</height>
           </size>
          </property>
@@ -54,7 +54,7 @@
         <widget class="QToolButton" name="btn2">
          <property name="minimumSize">
           <size>
-           <width>100</width>
+           <width>116</width>
            <height>60</height>
           </size>
          </property>
@@ -80,7 +80,7 @@
         <widget class="QToolButton" name="btn3">
          <property name="minimumSize">
           <size>
-           <width>100</width>
+           <width>116</width>
            <height>60</height>
           </size>
          </property>
@@ -106,12 +106,12 @@
         <widget class="QToolButton" name="btn4">
          <property name="minimumSize">
           <size>
-           <width>100</width>
+           <width>116</width>
            <height>60</height>
           </size>
          </property>
          <property name="text">
-          <string>cus Delegate</string>
+          <string>paint Delegate</string>
          </property>
          <property name="icon">
           <iconset resource="build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/.qt/rcc/resources.qrc">
@@ -132,12 +132,38 @@
         <widget class="QToolButton" name="btn5">
          <property name="minimumSize">
           <size>
-           <width>100</width>
+           <width>116</width>
            <height>60</height>
           </size>
          </property>
          <property name="text">
           <string>非Delegate</string>
+         </property>
+         <property name="icon">
+          <iconset resource="build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/.qt/rcc/resources.qrc">
+           <normaloff>:/res/svg/set2.svg</normaloff>:/res/svg/set2.svg</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>40</width>
+           <height>40</height>
+          </size>
+         </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonStyle::ToolButtonTextUnderIcon</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="btn5_2">
+         <property name="minimumSize">
+          <size>
+           <width>116</width>
+           <height>60</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>paint editorEvent</string>
          </property>
          <property name="icon">
           <iconset resource="build/Desktop_Qt_6_10_2_MinGW_64_bit-Debug/.qt/rcc/resources.qrc">
@@ -173,7 +199,7 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="userInfo">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -366,6 +392,22 @@
          </item>
         </layout>
        </widget>
+      </widget>
+      <widget class="QWidget" name="page">
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QGroupBox" name="groupBox_3">
+          <property name="title">
+           <string>GroupBox</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_7">
+           <item>
+            <widget class="QTableView" name="paint"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
       </widget>
       <widget class="QWidget" name="finance">
        <layout class="QVBoxLayout" name="verticalLayout_6">

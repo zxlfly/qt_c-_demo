@@ -35,7 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->listView->setEditTriggers(QAbstractItemView::DoubleClicked|QAbstractItemView::SelectedClicked);
     ui->listView->setItemDelegate(new CustomListDelegate(this));
 
-    // 基础使用，不自定义
+    // ************ 基础使用，不自定义 ************
     model_jichu = new QStandardItemModel(4,4,this);
     model_jichu->setHorizontalHeaderLabels({"姓名", "年龄","性别" ,"城市"});
 
@@ -67,7 +67,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->jichu->horizontalHeader()->setSectionsClickable(true);
     ui->jichu->verticalHeader()->setSectionsClickable(true);
 
-    //mvc完整基础示例
+    // ************ mvc完整基础示例 ************
     model_mvc = new QStandardItemModel(4,5,this);  // 修正：改为5列
     model_mvc->setHorizontalHeaderLabels({"列0", "列1", "列2", "列3", "列4"});  // 添加表头
     model_mvc_select = new QItemSelectionModel(model_mvc,this);
@@ -96,7 +96,85 @@ MainWindow::MainWindow(QWidget *parent)
     // ui->tableView->setAlternatingRowColors(true);
     // ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
     // ui->tableView->setSelectionMode(QAbstractItemView::SingleSelection);
-    
+
+    // ************ 不用委托，默认绘制渲染和编辑使用同一个控件 ************
+    model_buyong = new QStandardItemModel(4, 4, this);
+    model_buyong->setHorizontalHeaderLabels({"姓名", "年龄", "性别", "备注"});
+    model_buyong_select = new QItemSelectionModel(model_buyong, this);
+
+    ui->buyong->setModel(model_buyong);
+    ui->buyong->setSelectionModel(model_buyong_select);
+
+    // 禁用默认委托编辑
+    ui->buyong->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    // 为每个单元格创建持久化 Widget 并连接双向同步
+    for (int row = 0; row < 4; ++row) {
+        // 列0：QLineEdit（姓名）
+        QLineEdit *leName = new QLineEdit(ui->buyong);
+        leName->setText("张三");
+        ui->buyong->setIndexWidget(model_buyong->index(row, 0), leName);
+        connect(leName, &QLineEdit::editingFinished, [this, row, leName]() {
+            model_buyong->setData(model_buyong->index(row, 0), leName->text());
+        });
+
+        // 列1：QSpinBox（年龄）
+        QSpinBox *sbAge = new QSpinBox(ui->buyong);
+        sbAge->setRange(0, 150);
+        sbAge->setValue(18 + row);
+        ui->buyong->setIndexWidget(model_buyong->index(row, 1), sbAge);
+        connect(sbAge, QOverload<int>::of(&QSpinBox::valueChanged), [this, row](int val) {
+            model_buyong->setData(model_buyong->index(row, 1), val);
+        });
+
+        // 列2：QComboBox（性别）
+        QComboBox *cbGender = new QComboBox(ui->buyong);
+        cbGender->addItems({"男", "女"});
+        cbGender->setCurrentIndex(0);
+        ui->buyong->setIndexWidget(model_buyong->index(row, 2), cbGender);
+        connect(cbGender, QOverload<int>::of(&QComboBox::currentIndexChanged), [this, row, cbGender](int) {
+            model_buyong->setData(model_buyong->index(row, 2), cbGender->currentText());
+        });
+
+        // 列3：QLineEdit（备注）
+        QLineEdit *leNote = new QLineEdit(ui->buyong);
+        leNote->setText("备注" + QString::number(row));
+        ui->buyong->setIndexWidget(model_buyong->index(row, 3), leNote);
+        connect(leNote, &QLineEdit::editingFinished, [this, row, leNote]() {
+            model_buyong->setData(model_buyong->index(row, 3), leNote->text());
+        });
+    }
+
+    // model → widget 反向同步
+    connect(model_buyong, &QStandardItemModel::dataChanged,
+            [this](const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles) {
+                // topLeft 变化区域的左上角单元格
+                //bottomRight变化区域的右下角单元格
+                //roles哪些数据角色发生了变化（如 DisplayRole、EditRole 等）
+                // 只处理 DisplayRole 的数据变化，避免循环触发
+                if (!roles.isEmpty() && !roles.contains(Qt::DisplayRole)) return;
+                // 遍历变化区域内的所有单元格
+                for (int row = topLeft.row(); row <= bottomRight.row(); ++row) {
+                    for (int col = topLeft.column(); col <= bottomRight.column(); ++col) {
+                        // 获取该单元格对应的 widget
+                        QWidget *w = ui->buyong->indexWidget(model_buyong->index(row, col));
+                        if (!w) continue;
+                        // 从 model 读取最新数据
+                        QVariant data = model_buyong->data(model_buyong->index(row, col));
+                        // 根据控件类型，把 model 数据设置到 widget  qobject_cast 尝试把 QWidget 转成 QLineEdit,转换成功说明是这个类型,比较当前值和新值，不同才设置（避免光标跳动）
+                        if (QLineEdit *le = qobject_cast<QLineEdit*>(w)) {
+                            if (le->text() != data.toString()) le->setText(data.toString());
+                        } else if (QSpinBox *sb = qobject_cast<QSpinBox*>(w)) {
+                            if (sb->value() != data.toInt()) sb->setValue(data.toInt());
+                        } else if (QComboBox *cb = qobject_cast<QComboBox*>(w)) {
+                            if (cb->currentText() != data.toString()) cb->setCurrentText(data.toString());
+                        }
+                    }
+                }
+            });
+
+    //  ************ 默认绘制自定义委托，通过paint来绘制非编辑状态下控件样式，使用createEditor绘制编辑控件 ************
+
 }
 
 MainWindow::~MainWindow()
