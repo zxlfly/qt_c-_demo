@@ -12,7 +12,22 @@
 #include <QSpinBox>
 #include <QApplication>
 #include <QListView>
+#include <QPainter>
 #include "customtabledelegate.h"
+
+// 不用委托方案的辅助类：只压制底层 paint 的文字绘制，让 setIndexWidget 的 Widget 独占渲染和编辑
+class NoPaintDelegate : public QStyledItemDelegate {
+public:
+    using QStyledItemDelegate::QStyledItemDelegate;
+    void paint(QPainter *painter, const QStyleOptionViewItem &option,
+               const QModelIndex &index) const override
+    {
+        // 只画选中背景，不画文字 —— 避免 Widget 和底层 paint 重影
+        if (option.state & QStyle::State_Selected)
+            painter->fillRect(option.rect, option.palette.highlight());
+    }
+};
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -106,7 +121,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->buyong->setModel(model_buyong);
     ui->buyong->setSelectionModel(model_buyong_select);
 
-    // 禁用默认委托编辑
+    // 设置空 paint 委托，压制底层文字绘制，避免和 setIndexWidget 的 Widget 重影
+    ui->buyong->setItemDelegate(new NoPaintDelegate(this));
+
+    // 禁用默认委托编辑（编辑由 setIndexWidget 的 Widget 直接处理）
     ui->buyong->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     // 为每个单元格创建持久化 Widget 并连接双向同步

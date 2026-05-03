@@ -22,15 +22,6 @@ public:
 
     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
                               const QModelIndex &index) const override;
-
-private:
-    // 辅助绘制方法
-    void paintLineEditStyle(QPainter *painter, const QStyleOptionViewItem &option,
-                            const QModelIndex &index) const;
-    void paintSpinBoxStyle(QPainter *painter, const QStyleOptionViewItem &option,
-                           const QModelIndex &index) const;
-    void paintComboBoxStyle(QPainter *painter, const QStyleOptionViewItem &option,
-                            const QModelIndex &index) const;
 };
 
 #endif
