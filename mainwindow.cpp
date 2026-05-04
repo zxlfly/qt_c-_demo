@@ -204,6 +204,9 @@ MainWindow::MainWindow(QWidget *parent)
     CustomTableDelegate *paintDelegate = new CustomTableDelegate(this);
     ui->paint->setItemDelegate(paintDelegate);
 
+    // 设置编辑触发方式：双击或选中后点击进入编辑
+    ui->paint->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked);
+
     // 填充初始数据
     for (int row = 0; row < 4; ++row) {
         model_paint->setItem(row, 0, new QStandardItem("张三"));

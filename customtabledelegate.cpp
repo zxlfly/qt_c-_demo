@@ -4,6 +4,7 @@
 #include <QSpinBox>
 #include <QComboBox>
 #include <QApplication>
+#include <QTimer>
 #include <QStyleOptionFrame>
 #include <QStyleOptionSpinBox>
 #include <QStyleOptionComboBox>
@@ -16,78 +17,91 @@ CustomTableDelegate::CustomTableDelegate(QObject *parent)
 void CustomTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                                 const QModelIndex &index) const
 {
-    painter->save();
-    QStyle *style = QApplication::style();
-
-    // 选中状态背景
-    if (option.state & QStyle::State_Selected) {
-        painter->fillRect(option.rect, option.palette.highlight());
+    // 编辑器打开期间，跳过自定义渲染，只画背景色，避免编辑器和 paint() 重影
+    if (index == m_editingIndex) {
+        painter->fillRect(option.rect, option.palette.base());
+        return;
     }
+
+    painter->save();
+
+    QStyle *style = option.widget ? option.widget->style() : QApplication::style();
+    QString text = index.data(Qt::DisplayRole).toString();
+
+    // 用控件背景色覆盖选中高亮（和 setIndexWidget 效果一致：控件遮住选中色）
+    painter->fillRect(option.rect, option.palette.base());
+
+    // 所有控件统一的状态和调色板：
+    // - 始终 Enabled | Active，避免编辑后焦点变化导致样式突变（如箭头消失）
+    // - 使用 option.palette 并强制 Active 色组，确保颜色一致
+    const QStyle::State stableState = QStyle::State_Enabled | QStyle::State_Active;
+    QPalette stablePalette = option.palette;
+    stablePalette.setCurrentColorGroup(QPalette::Active);
 
     switch (index.column()) {
     case 0:
-    case 3: {
-        // 用 QStyle 绘制原生 QLineEdit 外观
+    case 3: { // QLineEdit 外观
         QStyleOptionFrame opt;
-        opt.QStyleOption::operator=(option);
+        opt.rect = option.rect;
+        opt.state = stableState;
+        opt.palette = stablePalette;
+        opt.fontMetrics = option.fontMetrics;
+        opt.direction = option.direction;
         opt.lineWidth = 1;
         opt.midLineWidth = 0;
         opt.features = QStyleOptionFrame::None;
-        // Qt6: CE_FrameLineEdit 已移除，改用 PE_FrameLineEdit + PE_PanelLineEdit
-        style->drawPrimitive(QStyle::PE_PanelLineEdit, &opt, painter);
-        style->drawPrimitive(QStyle::PE_FrameLineEdit, &opt, painter);
 
-        // 在原生边框内绘制文本
-        QRect textRect = style->subElementRect(QStyle::SE_LineEditContents, &opt);
+        style->drawPrimitive(QStyle::PE_PanelLineEdit, &opt, painter, option.widget);
+        style->drawPrimitive(QStyle::PE_FrameLineEdit, &opt, painter, option.widget);
+
+        // 在边框内绘制文本
+        QRect textRect = style->subElementRect(QStyle::SE_LineEditContents, &opt, option.widget);
         textRect.adjust(2, 0, -2, 0);
-        QPalette::ColorRole textRole = (option.state & QStyle::State_Selected)
-                                           ? QPalette::HighlightedText : QPalette::Text;
-        painter->setPen(option.palette.color(textRole));
-        painter->drawText(textRect, Qt::AlignVCenter | Qt::AlignLeft,
-                          index.data(Qt::DisplayRole).toString());
+        painter->setPen(stablePalette.color(QPalette::Text));
+        painter->drawText(textRect, Qt::AlignVCenter | Qt::AlignLeft, text);
         break;
     }
-    case 1: {
-        // 用 QStyle 绘制原生 QSpinBox 外观
+    case 1: { // QSpinBox 外观
         QStyleOptionSpinBox opt;
-        opt.QStyleOption::operator=(option);
+        opt.rect = option.rect;
+        opt.state = stableState;
+        opt.palette = stablePalette;
+        opt.fontMetrics = option.fontMetrics;
+        opt.direction = option.direction;
         opt.subControls = QStyle::SC_SpinBoxFrame | QStyle::SC_SpinBoxUp | QStyle::SC_SpinBoxDown;
         opt.activeSubControls = QStyle::SC_None;
         opt.stepEnabled = QAbstractSpinBox::StepUpEnabled | QAbstractSpinBox::StepDownEnabled;
         opt.frame = true;
-        style->drawComplexControl(QStyle::CC_SpinBox, &opt, painter);
+        opt.buttonSymbols = QAbstractSpinBox::UpDownArrows;
 
-        // 通过 SC_SpinBoxEditField 子控件获取文本区域
+        style->drawComplexControl(QStyle::CC_SpinBox, &opt, painter, option.widget);
+
+        // 在编辑区域绘制数字文本
         QRect textRect = style->subControlRect(QStyle::CC_SpinBox, &opt,
-                                               QStyle::SC_SpinBoxEditField);
+                                                QStyle::SC_SpinBoxEditField, option.widget);
         textRect.adjust(2, 0, -2, 0);
-        QPalette::ColorRole textRole = (option.state & QStyle::State_Selected)
-                                           ? QPalette::HighlightedText : QPalette::Text;
-        painter->setPen(option.palette.color(textRole));
-        painter->drawText(textRect, Qt::AlignVCenter | Qt::AlignRight,
-                          index.data(Qt::DisplayRole).toString());
+        painter->setPen(stablePalette.color(QPalette::Text));
+        painter->drawText(textRect, Qt::AlignVCenter | Qt::AlignRight, text);
         break;
     }
-    case 2: {
-        // 用 QStyle 绘制原生 QComboBox 外观
+    case 2: { // QComboBox 外观
         QStyleOptionComboBox opt;
-        opt.QStyleOption::operator=(option);
+        opt.rect = option.rect;
+        opt.state = stableState;
+        opt.palette = stablePalette;
+        opt.fontMetrics = option.fontMetrics;
+        opt.direction = option.direction;
         opt.subControls = QStyle::SC_ComboBoxFrame | QStyle::SC_ComboBoxArrow;
         opt.activeSubControls = QStyle::SC_None;
-        opt.currentText = index.data(Qt::DisplayRole).toString();
+        opt.currentText = text;
         opt.currentIcon = QIcon();
         opt.editable = false;
         opt.frame = true;
-        style->drawComplexControl(QStyle::CC_ComboBox, &opt, painter);
+        opt.iconSize = QSize(16, 16);
 
-        // 选中状态下需要覆盖文本颜色
-        if (option.state & QStyle::State_Selected) {
-            QRect textRect = style->subControlRect(QStyle::CC_ComboBox, &opt,
-                                                   QStyle::SC_ComboBoxEditField);
-            textRect.adjust(3, 0, -3, 0);
-            painter->setPen(option.palette.color(QPalette::HighlightedText));
-            painter->drawText(textRect, Qt::AlignVCenter | Qt::AlignLeft, opt.currentText);
-        }
+        // CC_ComboBox 画框架和箭头，CE_ComboBoxLabel 画文本
+        style->drawComplexControl(QStyle::CC_ComboBox, &opt, painter, option.widget);
+        style->drawControl(QStyle::CE_ComboBoxLabel, &opt, painter, option.widget);
         break;
     }
     default:
@@ -98,24 +112,35 @@ void CustomTableDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
     painter->restore();
 }
 
+QSize CustomTableDelegate::sizeHint(const QStyleOptionViewItem &option,
+                                     const QModelIndex &index) const
+{
+    QSize size = QStyledItemDelegate::sizeHint(option, index);
+    size.setHeight(qMax(size.height(), 24));
+    return size;
+}
+
 QWidget *CustomTableDelegate::createEditor(QWidget *parent,
                                            const QStyleOptionViewItem &option,
                                            const QModelIndex &index) const
 {
+    Q_UNUSED(option);
+    m_editingIndex = index;  // 标记正在编辑的单元格
     switch (index.column()) {
     case 0:
-    case 3: {
-        QLineEdit *editor = new QLineEdit(parent);
-        return editor;
-    }
+    case 3:
+        return new QLineEdit(parent);
     case 1: {
         QSpinBox *editor = new QSpinBox(parent);
         editor->setRange(0, 150);
+        editor->setFrame(true);
+        editor->setButtonSymbols(QAbstractSpinBox::UpDownArrows);
         return editor;
     }
     case 2: {
         QComboBox *editor = new QComboBox(parent);
         editor->addItems({"男", "女"});
+        editor->setFrame(true);
         return editor;
     }
     default:
@@ -155,11 +180,18 @@ void CustomTableDelegate::setModelData(QWidget *editor, QAbstractItemModel *mode
     }
 
     model->setData(index, value, Qt::EditRole);
+
+    // 延迟清除编辑标记：确保编辑器完全移除后再恢复 paint() 渲染
+    // 避免编辑器关闭和 paint() 同时出现的重影
+    QTimer::singleShot(0, const_cast<CustomTableDelegate*>(this), [this]() {
+        m_editingIndex = QPersistentModelIndex();
+    });
 }
 
 void CustomTableDelegate::updateEditorGeometry(QWidget *editor,
                                                const QStyleOptionViewItem &option,
                                                const QModelIndex &index) const
 {
+    Q_UNUSED(index);
     editor->setGeometry(option.rect);
 }
