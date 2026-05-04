@@ -2,7 +2,8 @@
 /build/
 build/
 /cmake-build-*/
-
+.workbuddy
+.workbuddy/
 # Qt 生成文件
 ui_*.h
 qrc_*.cpp

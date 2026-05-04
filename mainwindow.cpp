@@ -214,7 +214,7 @@ MainWindow::MainWindow(QWidget *parent)
         model_paint->setItem(row, 2, new QStandardItem("男"));
         model_paint->setItem(row, 3, new QStandardItem("备注" + QString::number(row)));
     }
-    // 全自定义委托，通过paint来绘制非编辑状态下控件样式，使用editorEvent来实现对应的功能
+    // ******全自定义委托，通过paint来绘制非编辑状态下控件样式，使用editorEvent来实现对应的功能*****
     ui->quanziding->setStyleSheet("background-color:red;");
 }
 
